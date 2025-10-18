@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/sharu2920
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://www.htvgr.com
+  * I am sharu2920 (https://keybase.io/sharu2920) on keybase.
+  * I have a public key ASB1bqzPYmyc5DCMXxAO8yie-ztuBIYgo6g3bAC9mvxb4Qo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01203a938cd1df8ad1439b323b17586cd5db706d33a1503ad0b46e5c6332590b422e0a",
+      "host": "keybase.io",
+      "kid": "0120756eaccf626c9ce4308c5f100ef3289efb3b6e048620a3a8376c00bd9afc5be10a",
+      "uid": "cc0e59e4049a64d7ea2948655301a619",
+      "username": "sharu2920"
+    },
+    "merkle_root": {
+      "ctime": 1759911726,
+      "hash": "014f710412fb717fbf788514bad95b74f38de04534e5688f2e54a6bf7c60aedcc28226fd95ff29a65966629248c398efefe28b27488d451b55949bffc7872571",
+      "hash_meta": "acb233ee8f29f0cb006a4cff422535245eb05dc55da56638ab67add9d4306366",
+      "seqno": 27150752
+    },
+    "service": {
+      "entropy": "/wgRol7pQY42qkGz1LS2UVi4",
+      "hostname": "www.htvgr.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "6.5.1"
+  },
+  "ctime": 1759911741,
+  "expire_in": 504576000,
+  "prev": "9b30021f020e76cab97ee86f8e65bb06fb15723b0e4a09b759304e22d9b25614",
+  "seqno": 30,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgdW6sz2JsnOQwjF8QDvMonvs7bgSGIKOoN2wAvZr8W+EKp3BheWxvYWTESpcCHsQgmzACHwIOdsq5fuhvjmW7BvsVcjsOSgm3WTBOItmyVhTEIPW3FDxVdrqv3K7GCSxOivaMeljthgHPl635ZfYErlQiAgHCo3NpZ8RAiChHSjYT+XzMVIRRN1TOmY8NRVBHm6SLzroOkAwh9IoH3arazx7ToLWy3luHBq5pcckRQewdAUxNpG/Tl8C5C6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIPfHcNRR2E6ONF39kF+yOZJU2bilJR6r/acQirlFW4JSo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/sharu2920
+
+==================================================================
