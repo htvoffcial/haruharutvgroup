@@ -1,0 +1,166 @@
+<html lang="ja">
+
+<head prefix="og: https://ogp.me/ns#">
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="description" content="the placeholder project powered by Haruharu TelevisionGroup.">
+    <meta name="keywords" content="the placeholder project">
+    <meta name="author" content="the placeholder project">
+    <meta property="og:title" content="専門家には、○がある！(漢字一文字を募集) | the placeholder project 2024" />
+    <meta property="og:site_name" content="the placeholder project powered by Haruharu Television Group." />
+    <meta property="og:url" content="https://www.htvgr.com/theplaceholderproject/vote/" />
+    <meta property="og:image" content="https://www.htvgr.com/theplaceholderproject/vote/tpp-2024-ogp-2.webp" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:site" content="@haruharutv_jp" />
+    <meta name="twitter:creator" content="@haruharutv_jp" />
+    <meta name="twitter:card" content="summary" />
+    <meta property='og:description'
+        content='"その"間に生まれる新たなものづくり the placeholder project powered by Haruharu TelevisionGroup.'>
+    <link rel="icon" type="image/png" href="theplaceholderprojectlogo.png">
+    <link rel="apple-touch-icon" href="theplaceholderprojectlogo.png">
+    <script src="https://access.haruharutv.jp/theplaceholderproject/vote"></script>
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Yuji+Boku&display=swap"
+        rel="stylesheet">
+
+    <!--meta情報-->
+    <title>the placeholder project</title>
+</head>
+
+<body>
+    <topbar>
+        <p>the placeholder project</p>
+    </topbar>
+    <p>募集は終了しました！結果発表までお楽しみに！</p>
+    <style>
+        .falling-text {
+            position: absolute;
+            font-size: 40px;
+            white-space: nowrap;
+            animation: fall linear infinite;
+            z-index: 100;
+            color:#000;
+            font-family: "Yuji Boku", serif;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -50px;
+                opacity: 1;
+            }
+
+            100% {
+                top: 100vh;
+                opacity: 0;
+            }
+        }
+
+        topbar {
+            box-shadow: 0px 10px 18px -22px #444444;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .kanjibox {
+            position: relative;
+            display: block;
+            font-size: 11em;
+            text-align: center;
+            padding-bottom: 10px;
+            font-weight: bolder;
+            border: 20px outset #444444;
+            max-width: 300px;
+            max-height: 300px;
+            font-family: "Yuji Boku", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            overflow: hidden;
+            width: calc(100% - 20px);
+            display: flex;
+            text-align: center;
+            font-family: "Noto Sans JP", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+            position: absolute;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            padding: auto;
+        }
+    </style>
+    <script>
+        var mojilist;
+        var kanjibox = document.getElementById('kan2');
+        kanjibox.addEventListener('keydown', kan2);
+
+        function kan2(event) {
+            if (event.key === 'Enter') {
+                if (kanjibox.value.length === 0 || kanjibox.value.length >= 2) {
+                    kan2.value = "";
+                    document.getElementById('kan1').style.color = "red";
+                    setTimeout(function () {
+
+                        document.getElementById('kan1').style.color = "#000";
+                    }, 2000);
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "https://c.haruharutv.jp/tpp-2024-vote-1.php",
+                        data: { kan: kanjibox.value },
+                    }).done(function (response) {
+                        createFallingText("Thank You! 投稿完了です サーバ処理されると文字が降ってきます！");
+                        createFallingText("なお、2連続で投稿する際は負荷軽減のため、再読み込みをお勧めします。");
+                        kanjibox.value = "";
+                        mojilist = response;
+                        characters = mojilist.split(',');
+                        letsfall();
+                    });
+                }
+            }
+        }
+
+        var maxCharactersOnScreen = 10;
+        var activeCharacters = [];
+
+        function createFallingText(text) {
+            var span = document.createElement('span');
+            span.className = 'falling-text';
+            span.textContent = text;
+            span.style.left = Math.random() * 100 + 'vw';
+            span.style.animationDuration = (3 + Math.random() * 5) + 's';
+            document.body.appendChild(span);
+
+            activeCharacters.push(span);
+            if (activeCharacters.length > maxCharactersOnScreen) {
+                var oldCharacter = activeCharacters.shift();
+                oldCharacter.remove();
+            }
+            span.addEventListener('animationend', () => {
+                span.remove();
+            });
+        }
+
+        function letsfall() {
+            setInterval(() => {
+                if (characters.length > 0) {
+                    var randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+                    createFallingText(randomCharacter);
+                }
+            }, 2000);
+        }
+
+    </script>
+</body>
+
+</html>

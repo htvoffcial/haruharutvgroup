@@ -1,0 +1,23 @@
+# HTTPSへのリダイレクトを設定
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# キャッシュ設定
+SetEnvIf Request_URI ".*" Ngx_Cache_NoCacheMode=off
+SetEnvIf Request_URI ".*" Ngx_Cache_AllCacheMode
+
+# 拡張子を省略してもアクセス可能にする
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*[^/])$ $1.html [L]
+
+# 404エラーページを /404.html に設定
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.php
+
+<FILES 403_log.txt>
+order deny,allow
+deny from all
+allow from 114.177.106.10 localhost
+</FILES>
