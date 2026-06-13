@@ -40,21 +40,19 @@ jobs:
         run: |
           set -e
 
-          SRC_DIR="."
+          # 【変更点】ソースディレクトリを public に指定
+          SRC_DIR="public"
           OUT_DIR="dist"
 
           rm -rf "$OUT_DIR"
           mkdir -p "$OUT_DIR"
 
-          # Copy everything except git/workflow/dist/node_modules
+          # public/ の「中身だけ」を dist/ にコピー
           rsync -a \
-            --exclude '.git/' \
-            --exclude '.github/' \
-            --exclude 'dist/' \
-            --exclude 'node_modules/' \
+            --exclude '.DS_Store' \
             "$SRC_DIR"/ "$OUT_DIR"/
 
-          # Minify HTML
+          # HTMLのミニファイ
           find "$OUT_DIR" -type f \( -name "*.html" -o -name "*.htm" \) | while read -r file; do
             html-minifier-terser \
               --collapse-whitespace \
@@ -67,17 +65,17 @@ jobs:
               -o "$file" "$file"
           done
 
-          # Minify CSS
+          # CSSのミニファイ
           find "$OUT_DIR" -type f -name "*.css" | while read -r file; do
             cleancss -o "$file" "$file"
           done
 
-          # Minify JS
+          # JSのミニファイ
           find "$OUT_DIR" -type f -name "*.js" | while read -r file; do
             terser "$file" --compress --mangle --output "$file"
           done
 
-          # Convert images to WebP under 1MB
+          # 画像のWebP変換 (元の画像は削除せず保持)
           find "$OUT_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read -r file; do
             out="${file%.*}.webp"
 
@@ -88,22 +86,12 @@ jobs:
               -q 80
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp \
-                -i "$file" \
-                -o "$out" \
-                -f webp \
-                -q 65
+              sharp -i "$file" -o "$out" -f webp -q 65
             fi
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp \
-                -i "$file" \
-                -o "$out" \
-                -f webp \
-                -q 50
+              sharp -i "$file" -o "$out" -f webp -q 50
             fi
-
-            rm -f "$file"
           done
 
       - name: Upload artifact
