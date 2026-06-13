@@ -2,9 +2,7 @@
 <html lang="ja">
 
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
 
   <meta charset="UTF-8">
   <!--フォント読み込み
@@ -107,7 +105,7 @@
     <imbox>
       <div class="slideshow-container">
         <div class="slide fade">
-          <img src="https://www.htvgr.com/htv_heroimage.webp" usemap="#ImageMap" alt="はるはるTVヒーローイメージ1" />
+          <img src="https://www.htvgr.com/htv_heroimage.webp" usemap="#ImageMap" alt="はるはるTVヒーローイメージ1" fetchpriority="high"/>
           <!--
           <map name="ImageMap">
             <area shape="poly"
@@ -117,7 +115,7 @@
           -->
         </div>
         <div class="slide fade">
-          <img src="https://www.htvgr.com/haruharutelevisiongroup-brand-round-square-v1.webp" alt="イメージ2">
+          <img src="https://www.htvgr.com/haruharutelevisiongroup-brand-round-square-v1.webp" alt="イメージ2" fetchpriority="high">
         </div>
         <a class="prev" onclick="plusSlides(-1)" href="#previmg">&#10094;</a>
         <a class="next" onclick="plusSlides(1)" href="#nextimg">&#10095;</a>
