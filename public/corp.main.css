@@ -530,7 +530,7 @@ read {
   user-select: none;
 }
 
-
+/*
 body,
 html {
   font-family: "Poppins-JS", "Noto Sans JP-JS", ヒラギノ角ゴ Pro, sans-serif;
@@ -538,7 +538,7 @@ html {
   font-style: normal;
   margin: 0px;
 }
-
+*/
 read {
   background: crimson;
   padding: 15px;
