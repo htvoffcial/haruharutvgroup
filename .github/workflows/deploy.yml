@@ -34,7 +34,7 @@ jobs:
 
       - name: Install optimization tools
         run: |
-          npm install -g html-minifier-terser clean-css-cli terser sharp
+          npm install -g html-minifier-terser clean-css-cli terser sharp-cli
 
       - name: Build optimized site
         run: |
@@ -81,23 +81,26 @@ jobs:
           find "$OUT_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read -r file; do
             out="${file%.*}.webp"
 
-            sharp "$file" \
-              --webp \
-              --quality 80 \
-              --output "$out"
+            sharp \
+              -i "$file" \
+              -o "$out" \
+              -f webp \
+              -q 80
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp "$file" \
-                --webp \
-                --quality 65 \
-                --output "$out"
+              sharp \
+                -i "$file" \
+                -o "$out" \
+                -f webp \
+                -q 65
             fi
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp "$file" \
-                --webp \
-                --quality 50 \
-                --output "$out"
+              sharp \
+                -i "$file" \
+                -o "$out" \
+                -f webp \
+                -q 50
             fi
 
             rm -f "$file"
