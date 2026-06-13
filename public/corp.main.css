@@ -175,6 +175,7 @@ maincontents {
   display: none;
 }
 @media screen and (max-width: 768px) { 
+
 .slideshow-container>p {
     transform: translate(-45%, -50%);
   }
@@ -313,10 +314,10 @@ maincontents {
 }
 
 .slide img {
-  width: calc(100% - 10px);
+  width: 100%;
   border-radius: 20px;
   object-fit: cover;
-  height: calc(100% - 5px);
+  height:100%;
 }
 
 .fdb {
@@ -575,11 +576,12 @@ about {
 
 imbox {
   display: block;
-  background: #444;
+  background:#444;
   width: 100%;
   position: relative;
   text-align: center;
-  
+  margin-top:85px;
+  height:calc(100svh - 85px);
 }
 .c-head1{
   height: 150px;
@@ -630,7 +632,17 @@ box {
 }
 
 @media screen and (max-width: 600px) {
-
+  topbar{
+    justify-content: space-between;
+  }
+  .haruharu-strmng-logo{
+    height: 43px;
+    margin: 13px;
+  }
+  imbox{
+    margin-top: 100px;
+    height:50%;
+  }
   #olink img {
     margin-top: 10px;
   }
@@ -656,17 +668,20 @@ box {
 /*スライド関連*/
 
 .slideshow-container {
-  padding: 10px 0px 10px 0px;
+  padding: 0;
   position: relative;
   /*max-width: 1000px;*/
   margin: auto;
-  height: calc(100vh - 105px);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .slide {
   height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  top: 10px;
+  left: 10px;
   position: absolute;
-  width: 100%;
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -722,8 +737,13 @@ box {
 }
 
 @media screen and (max-width: 768px) { 
+ 
 .slideshow-container>p {
   transform: translate(-30%, -50%);font-size: 200%;
+  }
+  imbox{
+    margin-top: 100px;
+    height:50%;
   }
 .slideshow-container {
    height: calc(50vh - 105px);
