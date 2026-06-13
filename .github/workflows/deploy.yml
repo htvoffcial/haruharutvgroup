@@ -83,14 +83,14 @@ jobs:
               -i "$file" \
               -o "$out" \
               -f webp \
-              -q 40
+              -q 30
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp -i "$file" -o "$out" -f webp -q 65
+              sharp -i "$file" -o "$out" -f webp -q 35
             fi
 
             if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
-              sharp -i "$file" -o "$out" -f webp -q 50
+              sharp -i "$file" -o "$out" -f webp -q 30
             fi
           done
 
