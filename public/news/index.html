@@ -273,22 +273,7 @@
 
   </maincontents>
 </body>
-<script>
-  //bloosh.jp/tips/4308/参考
-  const targets = document.getElementsByClassName('fdb');
-  for (let i = targets.length; i--;) {
-    let observer = new IntersectionObserver((entries, observer) => {
-      for (let j = entries.length; j--;) {
-        if (entries[j].isIntersecting) {
-          entries[j].target.classList.add('show');
-        } else {
-          entries[j].target.classList.remove('show');
-        }
-      }
-    });
-    observer.observe(targets[i]);
-  }
-</script>
+
 <script src="https://www.htvgr.com/corp.main.js"></script>
 
 </html>
