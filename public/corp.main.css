@@ -533,7 +533,7 @@ read {
 
 body,
 html {
-  font-family: "Poppins", "Noto Sans JP", ヒラギノ角ゴ Pro, sans-serif;
+  font-family: "Poppins-JS", "Noto Sans JP-JS", ヒラギノ角ゴ Pro, sans-serif;
   font-weight: 400;
   font-style: normal;
   margin: 0px;
