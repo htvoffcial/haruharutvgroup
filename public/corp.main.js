@@ -1,3 +1,57 @@
+
+// --- 劇軽フォント自動最適化ローダー ---
+(function() {
+  // 1. すでにHTML側でGoogle Fonts等のリンクタグがあるか、または適用済みかチェック
+  const hasGoogleFonts = Array.from(document.querySelectorAll('link[href*="fonts.googleapis.com"]')).length > 0;
+  
+  // HTML側で読み込まれている場合は、JS側は何もしない（そのままブラウザに任せる）
+  if (hasGoogleFonts) {
+    console.log("Font Loader: Google Fonts link detected in HTML. Skipping dynamic load.");
+    return;
+  }
+
+  console.log("Font Loader: No Google Fonts link found. Starting fallback injection...");
+
+  // CSSを動的に生成して、2（ローカル挑戦）と 3（WOFF2適用）を同時に効率よく行う
+  // font-display: swap も効かせるため、文字が消える現象（ブロック）も起きません。
+  const fontStyle = document.createElement('style');
+  fontStyle.textContent = `
+    /* Noto Sans JP の動的定義 */
+    @font-face {
+      font-family: 'Noto Sans JP Custom';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      /* まずローカルに挑戦、なければ最軽量のWOFF2を直接ダウンロード */
+      src: local('Noto Sans JP'), 
+           local('NotoSansJP-Regular'),
+           url('https://fonts.gstatic.com/s/notosansjp/v52/-nd47OgZ05eKE68As4w_cXA6b6-v.woff2') format('woff2');
+    }
+
+    /* Poppins の動的定義 */
+    @font-face {
+      font-family: 'Poppins Custom';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      /* まずローカルに挑戦、なければ最軽量のWOFF2を直接ダウンロード */
+      src: local('Poppins'), 
+           local('Poppins-Regular'),
+           url('https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecmNE.woff2') format('woff2');
+    }
+
+    /* 3. 即席適用：bodyとhtmlの優先度を上書き */
+    body, html {
+      font-family: 'Poppins Custom', 'Noto Sans JP Custom', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+  `;
+
+  // 生成したStyleタグを即座にheadにブチ込む
+  document.head.appendChild(fontStyle);
+  console.log("Font Loader: Dynamic fonts styling injected successfully.");
+})();
+
+
 let slideIndex = 0;
 const slides = document.querySelectorAll('.slide');
 
@@ -181,66 +235,3 @@ if (!targets || targets.length === 0) {// 必要に応じてコンソールに�
   }
 }
 
-(function() {
-  // 1. すでにHTML側でGoogle Fonts（または外部フォント）が読み込まれているかチェック
-  // 読み込み済みのCSSルールの中に "Poppins" や "Noto Sans JP" が含まれているか、
-  // あるいはすでにFonts APIに登録されている場合は処理をスキップします。
-  const isFontLoaded = (fontName) => {
-    return Array.from(document.styleSheets).some(sheet => {
-      try {
-        return Array.from(sheet.cssRules || []).some(rule => 
-          rule.type === CSSRule.FONT_FACE_RULE && rule.style.fontFamily.includes(fontName)
-        );
-      } catch (e) {
-        // クロスドメインのCSS（Google Fontsなど）でエラーが出る場合は、
-        // linkタグのhref属性に "fonts.googleapis.com" があるかで簡易チェック
-        return Array.from(document.querySelectorAll('link[href*="fonts.googleapis.com"]')).length > 0;
-      }
-    }) || document.fonts.check(`1em ${fontName}`);
-  };
-
-  // 2. 動的にフォントを適用する関数
-  function loadFontDynamic(fontFamily, localNames, woff2Url) {
-    if (isFontLoaded(fontFamily)) {
-      console.log(`[FontLoader] ${fontFamily} はHTML側でロード済みのためスキップします。`);
-      return;
-    }
-
-    // local() の指定を組み立てる
-    const localSrc = localNames.map(name => `local('${name}')`).join(', ');
-    // なければ WOFF2 を読み込む記述を合体
-    const srcString = `${localSrc}, url('${woff2Url}') format('woff2')`;
-
-    // JavaScriptで @font-face を動的に生成
-    const fontFace = new FontFace(fontFamily, srcString, {
-      style: 'normal',
-      weight: '400',
-      display: 'swap' // 👈 文字が消えないように即席適用
-    });
-
-    // ブラウザのフォントマネージャーに登録して即座に適用させる
-    fontFace.load().then(loadedFace => {
-      document.fonts.add(loadedFace);
-      console.log(`[FontLoader] ${fontFamily} を動的適用しました（ローカルまたはWOFF2）`);
-    }).catch(err => {
-      console.error(`[FontLoader] ${fontFamily} の読み込みに失敗しました:`, err);
-    });
-  }
-
-  // --- 実行部 ---
-  // 引数：(CSSで使う名前, [ローカルで探す名前の候補], WOFF2の直URL)
-  
-  // Poppins の読み込みに挑戦
-  loadFontDynamic(
-    'Poppins', 
-    ['Poppins', 'Poppins-Regular'], 
-    'https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecmNE.woff2'
-  );
-
-  // Noto Sans JP の読み込みに挑戦
-  loadFontDynamic(
-    'Noto Sans JP', 
-    ['Noto Sans JP', 'NotoSansJP-Regular'], 
-    'https://fonts.gstatic.com/s/notosansjp/v52/-nd47OgZ05eKE68As4w_cXA6b6-v.woff2'
-  );
-})();
