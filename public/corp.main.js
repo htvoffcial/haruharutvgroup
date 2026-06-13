@@ -12,7 +12,6 @@
 
   const fontStyle = document.createElement('style');
   fontStyle.textContent = `
-    /* --- Noto Sans JP (Normal 400) --- */
     @font-face {
       font-family: 'Noto Sans JP-JS';
       font-style: normal;
@@ -21,7 +20,6 @@
       src: local('Noto Sans JP'), local('NotoSansJP-Regular'),
            url('https://fonts.gstatic.com/s/notosansjp/v52/-nd47OgZ05eKE68As4w_cXA6b6-v.woff2') format('woff2');
     }
-    /* --- Noto Sans JP (Bold 700) --- */
     @font-face {
       font-family: 'Noto Sans JP-JS';
       font-style: normal;
@@ -31,21 +29,17 @@
            url('https://fonts.gstatic.com/s/notosansjp/v52/-nd77OgZ05eKE68As4w_cXA6b-Ox.woff2') format('woff2');
     }
 
-    /* --- Poppins (Variable Font: wght 100-900) --- */
     @font-face {
       font-family: 'Poppins-JS';
       font-style: normal;
-      /* 👇 100から900までの太さをこの1ファイルでカバーするという宣言 */
       font-weight: 100 900; 
       font-display: swap;
-      /* 端末内の可変フォント、または通常のPoppins、最後に最新のGoogle可変WOFF2を読み込む */
       src: local('Poppins Variable'),
            local('Poppins'),
            url('https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2') format('woff2');
     }
 
-    /* 3. 即席適用：すべての文字が入る要素に一斉爆撃 */
-    body, html, p, h1, h2, h3, h4, h5, h6, a, b, span, div, summary {
+    *{
       font-family: 'Poppins-JS', 'Noto Sans JP-JS', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
   `;
