@@ -17,7 +17,7 @@
   const fontStyle = document.createElement('style');
   fontStyle.textContent = `
     @font-face {
-      font-family: 'Noto Sans JP Custom';
+      font-family: 'Noto Sans JP';
       font-style: normal;
       font-weight: 400;
       font-display: swap;
@@ -26,7 +26,7 @@
            url('https://fonts.gstatic.com/s/notosansjp/v52/-nd47OgZ05eKE68As4w_cXA6b6-v.woff2') format('woff2');
     }
     @font-face {
-      font-family: 'Poppins Custom';
+      font-family: 'Poppins';
       font-style: normal;
       font-weight: 400;
       font-display: swap;
@@ -36,7 +36,7 @@
     }
 
     body, html {
-      font-family: 'Poppins Custom', 'Noto Sans JP Custom', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      font-family: 'Poppins', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
   `;
 
