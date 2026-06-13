@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build, optimize, and deploy to GitHub Pages
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -24,11 +24,89 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install optimization tools
+        run: |
+          npm install -g html-minifier-terser clean-css-cli terser sharp
+
+      - name: Build optimized site
+        run: |
+          set -e
+
+          SRC_DIR="."
+          OUT_DIR="dist"
+
+          rm -rf "$OUT_DIR"
+          mkdir -p "$OUT_DIR"
+
+          # Copy everything except git/workflow/dist/node_modules
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'dist/' \
+            --exclude 'node_modules/' \
+            "$SRC_DIR"/ "$OUT_DIR"/
+
+          # Minify HTML
+          find "$OUT_DIR" -type f \( -name "*.html" -o -name "*.htm" \) | while read -r file; do
+            html-minifier-terser \
+              --collapse-whitespace \
+              --remove-comments \
+              --remove-redundant-attributes \
+              --remove-script-type-attributes \
+              --remove-style-link-type-attributes \
+              --minify-css true \
+              --minify-js true \
+              -o "$file" "$file"
+          done
+
+          # Minify CSS
+          find "$OUT_DIR" -type f -name "*.css" | while read -r file; do
+            cleancss -o "$file" "$file"
+          done
+
+          # Minify JS
+          find "$OUT_DIR" -type f -name "*.js" | while read -r file; do
+            terser "$file" --compress --mangle --output "$file"
+          done
+
+          # Convert images to WebP under 1MB
+          find "$OUT_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read -r file; do
+            out="${file%.*}.webp"
+
+            sharp "$file" \
+              --webp \
+              --quality 80 \
+              --output "$out"
+
+            if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
+              sharp "$file" \
+                --webp \
+                --quality 65 \
+                --output "$out"
+            fi
+
+            if [ "$(stat -c%s "$out")" -gt 1048576 ]; then
+              sharp "$file" \
+                --webp \
+                --quality 50 \
+                --output "$out"
+            fi
+
+            rm -f "$file"
+          done
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment
