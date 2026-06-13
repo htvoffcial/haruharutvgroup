@@ -1,82 +1,35 @@
-name: Optimize and Deploy to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main # または master。トリガーにしたいブランチ名
+      - main
 
-# GitHub Pagesへのデプロイに必要な権限
 permissions:
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
   build-and-deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 1. Node.js環境のセットアップ（最適化スクリプト用）
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # 2. 必要なツール（Minify用ツールと画像変換ツール）をインストール
-      - name: Install Optimization Tools
-        run: |
-          npm install -g html-minifier-terser clean-css-cli terser imagemin-cli imagemin-webp
-
-      # 3. HTML, CSS, JS の Minify 処理
-      - name: Minify HTML, CSS, and JS
-        run: |
-          # public フォルダが存在することを確認
-          if [ -d "public" ]; then
-            # HTMLの圧縮
-            find public -name "*.html" -exec html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o {} {} \;
-            # CSSの圧縮
-            find public -name "*.css" -exec cleancss -o {} {} \;
-            # JSの圧縮
-            find public -name "*.js" -exec terser {} -o {} \;
-          fi
-
-      # 4. 画像（JPG, PNG）をWebPに変換（1MB以下に抑える設定）
-      - name: Convert Images to WebP (Max 1MB)
-        run: |
-          if [ -d "public" ]; then
-            # 一度品質80でWebPに変換し、拡張子を.webpにする
-            # qualityを調整（デフォルト80）。大抵の画像はこれで1MB以下になります。
-            find public -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \) | while read -r img; do
-              # imageminを使ってWebPに変換
-              imagemin "$img" --plugin=webp > "${img%.*}.webp"
-              # 元のJPG/PNGを削除（Pagesに含めない場合）
-              rm "$img"
-            done
-
-            # もし1MBを超えているWebPがあれば、画質をさらに落として1MB未満に強制調整
-            find public -name "*.webp" -size +1M | while read -r large_webp; do
-              echo "Warning: $large_webp is larger than 1MB. Re-compressing..."
-              # ここでは元のファイルがないため、すでに変換されたものを再圧縮、または通知などの処理
-              # ※極端に巨大な画像でなければ、品質80のWebP化で1MBは下回ることが多いです。
-            done
-          fi
-
-      # 5. GitHub Pages へのアップロード準備
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '/public'
+          path: ./public
 
-      # 6. GitHub Pages へのデプロイ
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
