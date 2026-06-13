@@ -180,3 +180,67 @@ if (!targets || targets.length === 0) {// 必要に応じてコンソールに�
     observer.observe(targets[i]);
   }
 }
+
+(function() {
+  // 1. すでにHTML側でGoogle Fonts（または外部フォント）が読み込まれているかチェック
+  // 読み込み済みのCSSルールの中に "Poppins" や "Noto Sans JP" が含まれているか、
+  // あるいはすでにFonts APIに登録されている場合は処理をスキップします。
+  const isFontLoaded = (fontName) => {
+    return Array.from(document.styleSheets).some(sheet => {
+      try {
+        return Array.from(sheet.cssRules || []).some(rule => 
+          rule.type === CSSRule.FONT_FACE_RULE && rule.style.fontFamily.includes(fontName)
+        );
+      } catch (e) {
+        // クロスドメインのCSS（Google Fontsなど）でエラーが出る場合は、
+        // linkタグのhref属性に "fonts.googleapis.com" があるかで簡易チェック
+        return Array.from(document.querySelectorAll('link[href*="fonts.googleapis.com"]')).length > 0;
+      }
+    }) || document.fonts.check(`1em ${fontName}`);
+  };
+
+  // 2. 動的にフォントを適用する関数
+  function loadFontDynamic(fontFamily, localNames, woff2Url) {
+    if (isFontLoaded(fontFamily)) {
+      console.log(`[FontLoader] ${fontFamily} はHTML側でロード済みのためスキップします。`);
+      return;
+    }
+
+    // local() の指定を組み立てる
+    const localSrc = localNames.map(name => `local('${name}')`).join(', ');
+    // なければ WOFF2 を読み込む記述を合体
+    const srcString = `${localSrc}, url('${woff2Url}') format('woff2')`;
+
+    // JavaScriptで @font-face を動的に生成
+    const fontFace = new FontFace(fontFamily, srcString, {
+      style: 'normal',
+      weight: '400',
+      display: 'swap' // 👈 文字が消えないように即席適用
+    });
+
+    // ブラウザのフォントマネージャーに登録して即座に適用させる
+    fontFace.load().then(loadedFace => {
+      document.fonts.add(loadedFace);
+      console.log(`[FontLoader] ${fontFamily} を動的適用しました（ローカルまたはWOFF2）`);
+    }).catch(err => {
+      console.error(`[FontLoader] ${fontFamily} の読み込みに失敗しました:`, err);
+    });
+  }
+
+  // --- 実行部 ---
+  // 引数：(CSSで使う名前, [ローカルで探す名前の候補], WOFF2の直URL)
+  
+  // Poppins の読み込みに挑戦
+  loadFontDynamic(
+    'Poppins', 
+    ['Poppins', 'Poppins-Regular'], 
+    'https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJbecmNE.woff2'
+  );
+
+  // Noto Sans JP の読み込みに挑戦
+  loadFontDynamic(
+    'Noto Sans JP', 
+    ['Noto Sans JP', 'NotoSansJP-Regular'], 
+    'https://fonts.gstatic.com/s/notosansjp/v52/-nd47OgZ05eKE68As4w_cXA6b6-v.woff2'
+  );
+})();
